@@ -1,10 +1,13 @@
 import os 
-import torch
+import sys
 import numpy as np
-import torch.nn.functional as F
+from os.path import dirname as up
+
+import torch
 from torch.utils.data import Dataset
 
 import variable as var
+sys.path.append(os.path.join(up(up(os.path.abspath(__file__))), 'utils'))
 from utils import load_nii
 from resize import resize_for_unet
 
@@ -24,7 +27,7 @@ class DataGenerator(Dataset):
 
     def __len__(self):
         'Denotes the number of batches per epoch'
-        return len(self.list_IDs) #int(np.floor(len(self.list_IDs) / self.batch_size))
+        return len(self.list_IDs) 
 
     def __getitem__(self, index):
         'Generate one batch of data'
@@ -50,14 +53,11 @@ class DataGenerator(Dataset):
 
         image_size=(image_size[0]-image_size[0]%(2**var.DEEP_UNET),image_size[1]-image_size[1]%(2**var.DEEP_UNET),image_size[2])
 
-        X = np.empty(( self.n_channels,*image_size)) #peut être que ya un pb de dim avec n_channels
-        y = np.empty(image_size,dtype=np.int64) #.astype(np.int32) pour changer le yper d'un tableau numpy 
+        X = np.empty(( self.n_channels,*image_size)) 
+        y = np.empty(image_size,dtype=np.int64)  
 
         X[0,:,:,:] = X1
         y[:,:,:] = y1
-
-        # y=F.one_hot(torch.tensor(y), num_classes=4)
-        # y=torch.moveaxis(y,-1,0)
 
         return torch.tensor(X,dtype=torch.float),torch.tensor(y)
     
@@ -123,8 +123,7 @@ def gen_weights(class_distribution, c = 1.02):
 if __name__ == "__main__":
     train_data_generator, validation_data_generator, test_data_generator=create_generators()
     X,y=test_data_generator.__getitem__(1)
-    print(np.shape(X),np.shape(y))
-    print(y[99,90:120,8])
+
 
     
 
