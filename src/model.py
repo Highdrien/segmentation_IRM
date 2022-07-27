@@ -1,7 +1,8 @@
-import torch
 import numpy as np
-from torch import nn
 import random
+
+import torch
+from torch import nn
 
 random.seed(0)
 np.random.seed(0)

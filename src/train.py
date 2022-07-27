@@ -1,12 +1,14 @@
-import torch
-from torch.utils.data import DataLoader
-from tqdm import tqdm
-import variable as var
-from model import UNet
 import os
 import numpy as np
-from generateur import create_generators, gen_weights, CLASSES_DISTRIBUTION
+from tqdm import tqdm
+import variable as var
 from sklearn.metrics import accuracy_score, jaccard_score
+
+import torch
+from torch.utils.data import DataLoader
+
+from model import UNet
+from generateur import create_generators, gen_weights, CLASSES_DISTRIBUTION
 
 
 def train(epochs=var.EPOCHS,lr=var.LEARNING_RATE,batch_size=1,eval_every=1,checkpoint_path="trained_models"):
@@ -42,7 +44,7 @@ def train(epochs=var.EPOCHS,lr=var.LEARNING_RATE,batch_size=1,eval_every=1,check
     for epoch in range(1, epochs+1):
         training_loss = []
         print('epoch:'+str(epoch))
-        for (image, target) in train_loader:
+        for (image, target) in tqdm(train_loader, desc = 'training'):
             
             image = image.to(device)
             target = target.to(device)
@@ -74,7 +76,7 @@ def train(epochs=var.EPOCHS,lr=var.LEARNING_RATE,batch_size=1,eval_every=1,check
             iou_par_classes=0
             
             with torch.no_grad():
-                for (image, target) in val_loader:
+                for (image, target) in tqdm(val_loader, desc = 'validation'):
 
                     image = image.to(device)
                     target = target.to(device)
