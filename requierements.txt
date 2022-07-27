@@ -1,0 +1,6 @@
+nibabel
+medpy
+pandas
+opencv-python
+torch
+torchvision
